@@ -6,10 +6,36 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <script type="text/javascript">
 
-var mapping;
-$.getJSON("data/basic.json", function(data) {
-    mapping = data;
-});
+var mapping = 
+{
+    "A":"Apple",
+    "B":"BASIC",
+    "C":"Cisco",
+    "D":"Debug",
+    "E":"eBay",
+    "F":"Facebook",
+    "G":"Google",
+    "H":"HP",
+    "I":"Intel",
+    "J":"Java",
+    "K":"Kindle",
+    "L":"Linux",
+    "M":"Microsoft",
+    "N":"NVIDIA",
+    "O":"Oracle",
+    "P":"PHP",
+    "Q":"Qualcomm",
+    "R":"Ruby",
+    "S":"Square",
+    "T":"Twitter",
+    "U":"Unix",
+    "V":"VMware",
+    "W":"Web",
+    "X":"XML",
+    "Y":"Yahoo",
+    "Z":"Zynga"
+};
+
 
 function convert(s) {
     var len = s.length;
@@ -23,7 +49,17 @@ function convert(s) {
             res.push(c + " as in " + word); 
         }
     }
+	return res;
+}
+
+function convertForTextArea(s) {
+	var res = convert(s);
     return res.join("<br />");
+}
+
+function convertForSpeech(s) {
+	var res = convert(s);
+    return res.join(" ");
 }
 
 $(document).ready(function () {
@@ -31,10 +67,22 @@ $(document).ready(function () {
     var resultArea = $("#result");
     textArea.on("change blur keyup mouseup", function() {
         var s = $(this).val();
-        var result = convert(s);
+        var result = convertForTextArea(s);
         //resultArea.text(result);
         resultArea.html(result);
     });
+
+	var audio = new Audio();
+
+    var saybutton = $("#say");
+	saybutton.on("click", function(){
+        var s = $("#text").val();
+        var result = convertForSpeech(s);
+		var encodedText = encodeURIComponent(result);
+		audio.src ='http://translate.google.com/translate_tts?ie=utf-8&tl=en&q=' + encodedText;
+		audio.play();
+	});
+
 });
 
 </script>
@@ -67,6 +115,7 @@ As you type, you see hacky phonetic alphabets.<br />
 <input type="text" id="text"></input>
 <div id="result"></div>
 </div>
+<button id="say" type="button" >and let it speak</button>
 
 </body>
 </html>
